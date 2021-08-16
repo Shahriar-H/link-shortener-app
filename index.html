@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Know About your Book Application</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        body{
+            overflow: hidden;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.753), rgba(0, 0, 0, 0.715)), url('./bg.jpeg');
+            height: 100vh;
+            width: 100%;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+        .main_box{
+            padding: 30px;
+            width: 40%;
+            background-color: rgba(0, 0, 0, 0.507);
+            box-shadow: 0 0 5px 0 rgba(255, 0, 0, 0.671);
+        }
+        form{
+            display: flex;
+        }
+        form input, button{
+            background-color: black;
+            padding: 10px;
+            width: 100%;
+            border: 1px solid rgba(3, 212, 3, 0.267);
+            color: wheat;
+            margin: 3px;
+        }
+        form button{
+            width: 20%;
+            background-color: green;
+            margin: 3px;
+            border:none;
+            cursor: pointer;
+        }
+        .info_box{
+            overflow: hidden;
+            text-align: center;
+            color: white;
+        }
+        .info_box img{
+            height: 200px;
+            width: 200px;
+        }
+        .copyit{
+            background-color: rgba(36, 35, 35, 0.705) !important;
+            border: 1px solid gray !important;
+            padding: 8px;
+            cursor: pointer;
+        }
+        @media only screen and (min-width:200px) and (max-width:991px) {
+            .main_box{
+                width: 98%;
+            }
+        }
+        @media only screen and (min-width:200px) and (max-width:386px) {
+            form{
+                display: inline-block;
+                width: 100% !important;
+            }
+            input, button{
+                width: 98% !important;
+            }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="main_box">
+        <form action="#">
+            <input required type="text" id="putname" name="name" placeholder="Please Enter Your Link- ">
+            <button onclick="clickbtnfun()" id="submitbtn">Analysis</button><br>
+        </form>
+        <input style="width: 1px;opacity: 0;" type="text" id="copyname" placeholder="">
+        <div class="info_box">
+            
+            <p id="nameis"></p>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        const formselcet = document.querySelector('form');
+        const btnselcet = document.querySelector('#putname');
+        const copyname = document.querySelector('#copyname');
+        const btnclick = document.querySelector('#submitbtn');
+
+        formselcet.onsubmit=(e)=>{
+            e.preventDefault();
+        }
+        var name='';
+        var obj='';
+        if(name==''){
+            btnclick.style.display='none';
+        }
+        btnselcet.oninput=()=>{
+            name = document.getElementById('putname').value;
+            if(name !=''){
+                btnclick.style.display='block';
+            }else{
+                btnclick.style.display='none';
+            }
+        }
+
+
+
+        async function clickbtnfun(){
+                //copythetext();
+                var htpr = new XMLHttpRequest();
+                document.getElementById('nameis').innerHTML='<img src="./cool_loading.gif" alt="">';
+                await htpr.open('GET','https://www.shareaholic.com/v2/share/shorten_link?apikey=8943b7fd64cd8b1770ff5affa9a9437b&url='+name,true);
+                htpr.send();
+                htpr.onreadystatechange= async function(){
+                    if(htpr.readyState==4 && htpr.status==200){
+                        //console.log(htpr.status);
+                        var datas = await htpr.response;
+                        obj = await JSON.parse(datas);
+                        document.getElementById('nameis').innerHTML='<p style="color:green">'+btnselcet.value+'<span style="color:red;">- Your Short Link</span></p><br><abbr title="Copy text"><h3 onclick="copythetext()" class="copyit">'+obj.data+"</h3></abbr>";
+                        //console.log(obj.data);
+                       // btnselcet.value='';
+                    }
+                    if(htpr.status==''){
+                        document.getElementById('nameis').innerHTML='<p style="color:red; margin-top:30px;">Please Check your Internet Connection</p>';
+                    }
+
+                }
+                }
+            
+        function copythetext(){
+            var c = copyname.value=obj.data;
+            copyname.select();
+            //copyname.setSelectionRange(0,99999);
+            document.execCommand('copy');
+            alert("Link Copied- "+c);
+        }
+        
+
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
